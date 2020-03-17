@@ -1,11 +1,10 @@
 # vim: set ft=Dockerfile:
-FROM centos:7
+FROM ubi8/ubi:latest
 
 ENV NGINX_ROOT=/etc/opt/rh/rh-nginx112/nginx
 
-RUN yum install -y centos-release-scl-rh \
-    && yum -y install --setopt=tsflags=nodocs rh-nginx112 rh-nginx112-nginx \
-    && yum -y clean all \
+RUN dnf -y install --setopt=tsflags=nodocs rh-nginx112 rh-nginx112-nginx \
+    && fnd -y clean all \
     && rm -rf /var/cache/yum
 
 COPY scripts/docker/release/nginx/default.conf /etc/opt/rh/rh-nginx112/nginx/conf.d/default.conf
