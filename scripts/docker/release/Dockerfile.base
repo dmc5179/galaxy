@@ -1,17 +1,15 @@
 # vim: set ft=Dockerfile:
-FROM centos:7
+FROM ubi8/ubi:latest
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
 
 ENV PIP_NO_CACHE_DIR off
 ENV GALAXY_VENV /usr/share/galaxy/venv
 
 # Install packages and create virtual environment
-RUN yum -y install epel-release \
-    && yum -y install git gcc make python36 python36-devel \
-    && yum -y clean all \
+RUN dnf -y install git gcc make python3 python3-devel \
+    && dnf -y clean all \
     && rm -rf /var/cache/yum
 
 # Install python dependencies
