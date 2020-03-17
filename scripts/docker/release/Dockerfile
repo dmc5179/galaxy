@@ -1,12 +1,12 @@
-FROM galaxy-base:latest
+FROM quay.io/ansiblegalaxy/galaxy-base:latest
 
 # Install tini
-ENV TINI_VERSION v0.18.0
-RUN curl -sL -o '/usr/local/bin/tini' \
-        "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
-    && chmod +x /usr/local/bin/tini \
-    && yum -y clean all \
-    && rm -rf /var/cache/yum
+#ENV TINI_VERSION v0.18.0
+#RUN curl -sL -o '/usr/local/bin/tini' \
+#        "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
+#    && chmod +x /usr/local/bin/tini \
+#    && yum -y clean all \
+#    && rm -rf /var/cache/yum
 
 # Create galaxy user
 ENV HOME /var/lib/galaxy
@@ -22,9 +22,9 @@ RUN mkdir -p /etc/galaxy \
              /var/tmp/galaxy/uploads
 
 COPY scripts/docker/release/entrypoint.sh /entrypoint
-COPY --from=galaxy-build:latest /galaxy/dist/VERSION /usr/share/galaxy/
-COPY --from=galaxy-build:latest /galaxy/dist/*.whl /tmp
-COPY --from=galaxy-build:latest /galaxy/build/static /usr/share/galaxy/public/
+COPY --from=quay.io/ansiblegalaxy/galaxy-build:latest /galaxy/dist/VERSION /usr/share/galaxy/
+COPY --from=quay.io/ansiblegalaxy/galaxy-build:latest /galaxy/dist/*.whl /tmp
+COPY --from=quay.io/ansiblegalaxy/galaxy-build:latest /galaxy/build/static /usr/share/galaxy/public/
 RUN _galaxy_wheel="/tmp/galaxy-$(< /usr/share/galaxy/VERSION)-py3-none-any.whl" \
     && "${GALAXY_VENV}/bin/pip" install "${_galaxy_wheel}" \
     && rm -f "${_galaxy_wheel}"
