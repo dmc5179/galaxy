@@ -1,8 +1,7 @@
-FROM centos:7
+FROM ubi8/ubi
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_NO_CACHE_DIR off
@@ -13,22 +12,19 @@ ENV DJANGO_SETTINGS_MODULE galaxy.settings.development
 ENV C_FORCE_ROOT 1
 
 # Install node.js and yarn
-RUN curl -sL -o '/tmp/nodesource-release-el7-1.noarch.rpm' \
-        'https://rpm.nodesource.com/pub_8.x/el/7/x86_64/nodesource-release-el7-1.noarch.rpm' \
-    && rpm -i --nosignature --force '/tmp/nodesource-release-el7-1.noarch.rpm' \
-    && rm -f '/tmp/nodesource-release-el7-1.noarch.rpm' \
+RUN dnf -y install --setopt=tsflags=nodocs nodejs rsync \
     && curl -sL -o '/etc/yum.repos.d/yarn.repo' 'https://dl.yarnpkg.com/rpm/yarn.repo' \
-    && yum -y install nodejs yarn \
-    && yum -y clean all \
+    && dnf -y install --setopt=tsflags=nodocs yarn \
+    && dnf -y clean all \
     && rm -rf /var/cache/yum
 
 # Install packages
-RUN yum -y install epel-release \
-    && yum -y install \
+RUN dnf -y install \
         gcc git make \
-        python36 python36-devel \
-        tmux ShellCheck vim \
-    && yum -y clean all \
+        python3 python3-devel \
+        tmux vim \
+    && ln -sf /usr/bin/python3 /usr/bin/python \
+    && dnf -y clean all \
     && rm -rf /var/cache/yum
 
 # Create directories structure

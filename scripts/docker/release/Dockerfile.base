@@ -9,6 +9,7 @@ ENV GALAXY_VENV /usr/share/galaxy/venv
 
 # Install packages and create virtual environment
 RUN dnf -y install git gcc make python3 python3-devel \
+    && ln -sf /usr/bin/python3 /usr/bin/python \
     && dnf -y clean all \
     && rm -rf /var/cache/yum
 
