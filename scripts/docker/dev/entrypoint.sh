@@ -46,8 +46,10 @@ run_migrations() {
 
 prepare_env() {
     activate_venv
-    install_galaxy_dev
-    install_node_deps
+    # Comment these out to support air-gapped installs
+    # With no internet access
+    #install_galaxy_dev
+    #install_node_deps
     wait_tcp_port postgres 5432
     run_migrations
     wait_tcp_port rabbitmq 5672

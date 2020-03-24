@@ -12,6 +12,7 @@ ENV GALAXY_VENV /usr/share/galaxy/venv
 ENV DJANGO_SETTINGS_MODULE galaxy.settings.development
 ENV C_FORCE_ROOT 1
 
+
 # Install node.js and yarn
 RUN curl -sL -o '/tmp/nodesource-release-el7-1.noarch.rpm' \
         'https://rpm.nodesource.com/pub_8.x/el/7/x86_64/nodesource-release-el7-1.noarch.rpm' \
@@ -41,9 +42,17 @@ RUN mkdir -p /galaxy \
 
 VOLUME ["/var/lib/galaxy", "/var/tmp/galaxy"]
 
+# Pull into the container to support air-gapped installs
+# And I don't have to drag the code where ever the container runs
+COPY . /galaxy
+
 # Install node dependencies
 RUN yarn global add @angular/cli@6.1.2 \
-    && ng set --global packageManager=yarn
+    && ng set --global packageManager=yarn \
+    && echo "Installing node dependencies..." \
+    && pushd /galaxy/galaxyui \
+    && yarn install --non-interactive --no-progress \
+    && popd
 
 # Create virtual environment and install python dependencies
 COPY requirements/dev-requirements.txt /tmp/requirements.txt
@@ -52,7 +61,9 @@ RUN python3.6 -m venv "${GALAXY_VENV}" \
         'pip' \
         'wheel' \
         'setuptools' \
-    && "${GALAXY_VENV}/bin/pip" install -r /tmp/requirements.txt
+    && "${GALAXY_VENV}/bin/pip" install -r /tmp/requirements.txt \
+    && echo "Installing galaxy in development mode..." \
+    && "${GALAXY_VENV}/bin/pip" install -q -e '/galaxy/'
 
 COPY scripts/docker/dev/entrypoint.sh /entrypoint
 
