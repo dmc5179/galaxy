@@ -50,11 +50,11 @@ prepare_env() {
     # With no internet access
     #install_galaxy_dev
     #install_node_deps
-    wait_tcp_port postgres 5432
+    wait_tcp_port ${POSTGRES_HOST} 5432
     run_migrations
-    wait_tcp_port rabbitmq 5672
-    wait_tcp_port redis 6379
-    wait_tcp_port influxdb 8086
+    wait_tcp_port ${RABBITMQ_HOST} 5672
+    wait_tcp_port ${REDIS_HOST} 6379
+    wait_tcp_port ${INFLUXDB_HOST} 8086
 }
 
 run_api() {

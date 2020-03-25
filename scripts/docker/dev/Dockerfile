@@ -12,6 +12,10 @@ ENV GALAXY_VENV /usr/share/galaxy/venv
 ENV DJANGO_SETTINGS_MODULE galaxy.settings.development
 ENV C_FORCE_ROOT 1
 
+ENV POSTGRES_HOST=postgres
+ENV RABBITMQ_HOST=rabbitmq
+ENV REDIS_HOST=redis
+ENV INFLUXDB_HOST=influxdb
 
 # Install node.js and yarn
 RUN curl -sL -o '/tmp/nodesource-release-el7-1.noarch.rpm' \
